@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS - Mapa Navegável</title>
+    <style>
+        canvas{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="400" height="400"></canvas>
+</body>
+<script>
+
+    var cnv = document.querySelector('canvas')
+    var ctx = cnv.getContext('2d')
+
+    var srcX = 0
+    var srcY = 0
+    var size = 400
+    var speed = 2
+
+    var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40, PGUP = 33, PGDOWN = 34
+    var moveLeft = moveUp = moveRight = moveDown = zoomIn = zoomOut = false
+    
+    var map = new Image()
+    map.src = "./img/map.png"
+    map.onload = loop()
+
+    window.addEventListener("keydown", keydownHandler, false)
+    window.addEventListener("keyup", keyupHandler, false)
+
+
+    function keydownHandler(e) {
+        var key = e.keyCode
+        switch(key) {
+            case LEFT :
+                moveLeft = true
+                break
+            case UP :
+                moveUp = true
+                break
+            case RIGHT :
+                moveRight = true
+                break
+            case DOWN :
+                moveDown = true
+                break
+            case PGDOWN :
+                zoomOut = true
+                break
+            case PGUP : 
+                zoomIn = true
+                break
+        }
+    }
+
+    function keyupHandler(e) {
+        var key = e.keyCode
+        switch(key) {
+            case LEFT :
+                moveLeft = false
+                break
+            case UP :
+                moveUp = false
+                break
+            case RIGHT :
+                moveRight = false
+                break
+            case DOWN :
+                moveDown = false
+                break
+            case PGDOWN :
+                zoomOut = false
+                break
+            case PGUP : 
+                zoomIn = false
+                break
+        }
+    }
+
+
+    function loop() {
+        requestAnimationFrame(loop, cnv)
+        update()
+        render()
+    }
+
+    function render() {
+        ctx.clearRect(0,0,cnv.width,cnv.height)
+		ctx.drawImage(map, srcX, srcY, size, size, 0, 0, cnv.width, cnv.height)
+    }
+
+    function update() {
+        if(moveLeft) {
+            if(srcX > 1){
+                srcX -= speed
+            }
+        }
+        if(moveRight) {
+            srcX += speed
+        }
+        if(moveUp) {
+            if(srcY > 1) {
+                srcY -= speed
+            }
+        }
+        if(moveDown) {
+            srcY += speed
+        }
+        if(zoomIn) {
+            size -= speed
+        }
+        if(zoomOut) {
+            size += speed
+        }
+    }
+</script>
+</html>
